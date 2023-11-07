@@ -25,13 +25,17 @@ trait RopeImpl:
         throw new IndexOutOfBoundsException
       }
 
-  def length: Int = this match
+  private lazy val cachedLength: Int = calculateLength
+
+  private def calculateLength: Int = this match
     case Leaf(text) => text.length
     case Concat(left, right) => left.length + right.length
     case Slice(rope, start, end) =>
       val _ = rope.slice(start, end) // check start and end are valid
       if end - start > rope.length then rope.length else end - start
     case Repeat(rope, count) => rope.length * count
+
+  def length: Int = cachedLength
 
   override def toString(): String = this match
     case Leaf(text) => text
@@ -86,7 +90,7 @@ trait RopeImpl:
         else {
           // can find from middle?
           var breakLoop = false
-          var res: Int = -1;
+          var res: Int = -1
 
           for (i <- 1 to text.length if !breakLoop) {
             if (left.indexOf(text.take(i), start) != -1 && right.indexOf(text.drop(i), 0) != -1) {
