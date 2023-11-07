@@ -8,7 +8,7 @@ trait RopeImpl:
   import Rope.{Leaf, Concat, Slice, Repeat}
   // NOTE: DO NOT MODIFY THE CODE ABOVE THIS LINE.
 
-  def apply(index: Int): Char = this match
+  def apply(index: Int): Char = if index < 0 then throw new IndexOutOfBoundsException else this match
     case Leaf(text) => text.charAt(index)
     case Concat(left, right) =>
       try {
@@ -22,14 +22,14 @@ trait RopeImpl:
         rope.apply(index % rope.length)
       }
       else {
-        throw new StringIndexOutOfBoundsException
+        throw new IndexOutOfBoundsException
       }
 
   def length: Int = this match
     case Leaf(text) => text.length
     case Concat(left, right) => left.length + right.length
     case Slice(rope, start, end) =>
-      val _ = rope.slice(start, end)
+      val _ = rope.slice(start, end) // check start and end are valid
       if end - start > rope.length then rope.length else end - start
     case Repeat(rope, count) => rope.length * count
 
@@ -98,10 +98,8 @@ trait RopeImpl:
           res
         }
       }
-    case s@Slice(_, ss, se) =>
-      if start < ss || start + text.length > se
-      then -1
-      else s.toString().indexOf(text)
+    case s@Slice(_, _, _) =>
+      s.toString().indexOf(text)
     case r@Repeat(rope, count) =>
       val lowerBound = start / rope.length
       val span = text.length / rope.length + 2

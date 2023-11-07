@@ -22,6 +22,7 @@ class RopeSuite extends munit.FunSuite {
     assertEquals(("foo".rope + "bar".rope).apply(3), 'b')
     assertEquals(("foo".rope * 3).apply(4), 'o')
     assertEquals(("foo".rope * 3).apply(8), 'o')
+    assertEquals(("abc".rope * 3).slice(5, 7).apply(1), "abcabcabc".slice(5, 7).charAt(1))
   }
 
   test("apply - exception") {
