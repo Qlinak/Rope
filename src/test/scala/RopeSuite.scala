@@ -131,71 +131,78 @@ class RopeSuite extends munit.FunSuite {
     assertEquals(Slice(Repeat("abc".rope, 100000000), 100, 106).toString(), "abcabcabc".slice(1, 7))
   }
 
-//  test("insert - basic cases") {
-//    assertEquals("hello".rope.insert("world".rope, 0).toString, "worldhello")
-//    assertEquals("hello".rope.insert("world".rope, 1).toString, "hworldello")
-//    assertEquals("hello".rope.insert("world".rope, 5).toString, "helloworld")
-//  }
-//
-//  test("delete - basic cases") {
-//    assertEquals("hello".rope.delete(0, 0).toString, "hello")
-//    assertEquals("hello".rope.delete(0, 1).toString, "ello")
-//    assertEquals("hello".rope.delete(0, 2).toString, "llo")
-//    assertEquals("hello".rope.delete(0, 3).toString, "lo")
-//    assertEquals("hello".rope.delete(0, 4).toString, "o")
-//    assertEquals("hello".rope.delete(0, 5).toString, "")
-//    assertEquals("hello".rope.delete(1, 1).toString, "hello")
-//    assertEquals("hello".rope.delete(1, 2).toString, "hllo")
-//    assertEquals("hello".rope.delete(1, 3).toString, "hlo")
-//    assertEquals("hello".rope.delete(1, 4).toString, "ho")
-//    assertEquals("hello".rope.delete(1, 5).toString, "h")
-//    assertEquals("hello".rope.delete(2, 2).toString, "hello")
-//    assertEquals("hello".rope.delete(2, 3).toString, "helo")
-//    assertEquals("hello".rope.delete(2, 4).toString, "heo")
-//    assertEquals("hello".rope.delete(3, 3).toString, "hello")
-//    assertEquals("hello".rope.delete(3, 4).toString, "helo")
-//    assertEquals("hello".rope.delete(4, 4).toString, "hello")
-//  }
-//
-//  test("split - basic cases") {
-//    assertEquals("hello".rope.split("hello").map(_.toString), List("", ""))
-//    assertEquals("hello".rope.split("h").map(_.toString), List("", "ello"))
-//    assertEquals("hello".rope.split("e").map(_.toString), List("h", "llo"))
-//    assertEquals("hello".rope.split("l").map(_.toString), List("he", "", "o"))
-//    assertEquals("hello".rope.split("o").map(_.toString), List("hell", ""))
-//  }
-//
-//  test("replace - basic cases") {
-//    // Replacement on leaf nodes.
-//    val naisbitt = "We're drowning in information and starving for knowledge.".rope
-//    assertEquals(
-//      naisbitt.replace("information", "information superhighway").toString,
-//      "We're drowning in information superhighway and starving for knowledge."
-//    )
-//    assertEquals(
-//      naisbitt.replace("information", "information superhighway")
-//              .replace("knowledge", "wisdom")
-//              .toString,
-//      "We're drowning in information superhighway and starving for wisdom."
-//    )
-//    // Replacement on concat nodes.
-//    val shakesphare = "All the world's a stage, ".rope +
-//      "and all the men and women merely players.".rope
-//    assertEquals(
-//      shakesphare.replace("world's", "world is").toString,
-//      "All the world is a stage, and all the men and women merely players."
-//    )
-//    assertEquals(
-//      shakesphare.replace("stage, and", "stage and").toString,
-//      "All the world's a stage and all the men and women merely players."
-//    )
-//  }
-//
-//  test("duplicate - basic cases") {
-//    assertEquals("hello".rope.duplicate(0, 2, 0).toString, "llo")
-//    assertEquals("hello".rope.duplicate(0, 2, 1).toString, "hello")
-//    assertEquals("hello".rope.duplicate(0, 2, 2).toString, "hehello")
-//  }
+  test("insert - basic cases") {
+    assertEquals("hello".rope.insert("world".rope, 0).toString, "worldhello")
+    assertEquals("hello".rope.insert("world".rope, 1).toString, "hworldello")
+    assertEquals("hello".rope.insert("world".rope, 5).toString, "helloworld")
+  }
+
+  test("delete - basic cases") {
+    assertEquals("hello".rope.delete(0, 0).toString, "hello")
+    assertEquals("hello".rope.delete(0, 1).toString, "ello")
+    assertEquals("hello".rope.delete(0, 2).toString, "llo")
+    assertEquals("hello".rope.delete(0, 3).toString, "lo")
+    assertEquals("hello".rope.delete(0, 4).toString, "o")
+    assertEquals("hello".rope.delete(0, 5).toString, "")
+    assertEquals("hello".rope.delete(1, 1).toString, "hello")
+    assertEquals("hello".rope.delete(1, 2).toString, "hllo")
+    assertEquals("hello".rope.delete(1, 3).toString, "hlo")
+    assertEquals("hello".rope.delete(1, 4).toString, "ho")
+    assertEquals("hello".rope.delete(1, 5).toString, "h")
+    assertEquals("hello".rope.delete(2, 2).toString, "hello")
+    assertEquals("hello".rope.delete(2, 3).toString, "helo")
+    assertEquals("hello".rope.delete(2, 4).toString, "heo")
+    assertEquals("hello".rope.delete(3, 3).toString, "hello")
+    assertEquals("hello".rope.delete(3, 4).toString, "helo")
+    assertEquals("hello".rope.delete(4, 4).toString, "hello")
+  }
+
+  test("split - basic cases") {
+    assertEquals("hello".rope.split("hello").map(_.toString), List("", ""))
+    assertEquals("hello".rope.split("h").map(_.toString), List("", "ello"))
+    assertEquals("hello".rope.split("e").map(_.toString), List("h", "llo"))
+    assertEquals("hello".rope.split("l").map(_.toString), List("he", "", "o"))
+    assertEquals("hello".rope.split("o").map(_.toString), List("hell", ""))
+  }
+
+  test("replace - basic cases") {
+    // Replacement on leaf nodes.
+    val naisbitt = "We're drowning in information and starving for knowledge.".rope
+    assertEquals(
+      naisbitt.replace("information", "information superhighway").toString,
+      "We're drowning in information superhighway and starving for knowledge."
+    )
+    assertEquals(
+      naisbitt.replace("information", "information superhighway")
+              .replace("knowledge", "wisdom")
+              .toString,
+      "We're drowning in information superhighway and starving for wisdom."
+    )
+    // Replacement on concat nodes.
+    val shakesphare = "All the world's a stage, ".rope +
+      "and all the men and women merely players.".rope
+    assertEquals(
+      shakesphare.replace("world's", "world is").toString,
+      "All the world is a stage, and all the men and women merely players."
+    )
+    assertEquals(
+      shakesphare.replace("stage, and", "stage and").toString,
+      "All the world's a stage and all the men and women merely players."
+    )
+  }
+
+  test("replace - empty text case"){
+    assertEquals(
+      "abc".rope.replace("", "x").toString,
+      "xaxbxcx"
+    )
+  }
+
+  test("duplicate - basic cases") {
+    assertEquals("hello".rope.duplicate(0, 2, 0).toString, "llo")
+    assertEquals("hello".rope.duplicate(0, 2, 1).toString, "hello")
+    assertEquals("hello".rope.duplicate(0, 2, 2).toString, "hehello")
+  }
 //
 //  test("simplify - basic cases") {
 //    assertEquals("hello".rope.simplify, Rope.Leaf("hello"))

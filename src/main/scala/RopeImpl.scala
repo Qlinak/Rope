@@ -119,14 +119,29 @@ trait RopeImpl:
           then -1
           else res
 
-  def insert(rope: Rope, at: Int): Rope = ???
+  extension (s: String)
+    def insert(text: String, dest: Int): String =
+      if dest < 0 && dest > s.length
+      then throw new IndexOutOfBoundsException
+      else s.substring(0, dest) + text + s.substring(dest)
 
-  def delete(start: Int, end: Int): Rope = ???
+    def delete(start: Int, end: Int): String =
+      if start < 0 || end > s.length || start > end
+      then throw new IndexOutOfBoundsException()
+      else s.substring(0, start) + s.substring(end)
+  def insert(rope: Rope, at: Int): Rope = Leaf(this.toString().insert(rope.toString(), at))
+
+  def delete(start: Int, end: Int): Rope = Leaf(this.toString().delete(start, end))
 
   def split(separator: String): List[Rope] = ???
 
-  def replace(text: String, replacement: String): Rope = ???
+  def replace(text: String, replacement: String): Rope = Leaf(this.toString().replace(text, replacement))
 
-  def duplicate(start: Int, end: Int, times: Int): Rope = ???
+  def duplicate(start: Int, end: Int, times: Int): Rope =
+    if times < 0
+    then throw new IllegalArgumentException
+    else if times == 0
+    then this.delete(start, end)
+    else this.slice(start, end) * times + this.slice(end, length)
 
   def simplify: Rope = ???
