@@ -120,18 +120,18 @@ trait RopeImpl:
           else res
 
   extension (s: String)
-    def insert(text: String, dest: Int): String =
-      if dest < 0 && dest > s.length
-      then throw new IndexOutOfBoundsException
-      else s.substring(0, dest) + text + s.substring(dest)
+    def insert(text: String, dest: Int): String = s.substring(0, dest) + text + s.substring(dest)
 
-    def delete(start: Int, end: Int): String =
-      if start < 0 || end > s.length || start > end
-      then throw new IndexOutOfBoundsException()
-      else s.substring(0, start) + s.substring(end)
-  def insert(rope: Rope, at: Int): Rope = Leaf(this.toString().insert(rope.toString(), at))
+    def delete(start: Int, end: Int): String = s.substring(0, start) + s.substring(end)
+  def insert(rope: Rope, at: Int): Rope =
+    if at < 0 && at > rope.length
+    then throw new IndexOutOfBoundsException
+    else Leaf(this.toString().insert(rope.toString(), at))
 
-  def delete(start: Int, end: Int): Rope = Leaf(this.toString().delete(start, end))
+  def delete(start: Int, end: Int): Rope =
+    if start < 0 || end > length || start > end
+    then throw new IndexOutOfBoundsException()
+    else Leaf(this.toString().delete(start, end))
 
   def split(separator: String): List[Rope] = ???
 
