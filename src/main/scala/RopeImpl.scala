@@ -36,8 +36,10 @@ trait RopeImpl:
     case Repeat(rope, count) => rope.length * count
 
   def length: Int = cachedLength
-
-  override def toString(): String = this match
+  
+  private lazy val cachedToString: String = privateToString
+  
+  private def privateToString: String = this match
     case Leaf(text) => text
     case Concat(left, right) => left.toString() + right.toString()
     case Slice(rope, s1, e1) => if e1 <= s1 then throw new IndexOutOfBoundsException else rope match
@@ -68,6 +70,8 @@ trait RopeImpl:
           (leftSlice + rightSlice).toString()
         }
     case Repeat(rope, count) => rope.toString() * count
+
+  override def toString(): String = cachedToString
 
   def toStringBad(): String = this match
     case Leaf(text) => text
@@ -133,7 +137,24 @@ trait RopeImpl:
     then throw new IndexOutOfBoundsException()
     else Leaf(this.toString().delete(start, end))
 
-  def split(separator: String): List[Rope] = ???
+  def split(separator: String): List[Rope] =
+    if (separator.isEmpty) {
+      this.toString().split(separator).map(x => Leaf(x)).toList
+    }
+    else if(this.toString() == separator){
+      List(Leaf(""), Leaf(""))
+    }
+    else
+      val start = this.indexOf(separator, 0)
+      if (start == -1) {
+        List(this)
+      }
+      else if(start == 0){
+        Leaf("") :: this.delete(start, start + separator.length).split(separator)
+      }
+      else {
+        Leaf(this.toString().substring(0, start)) :: this.delete(0, start + separator.length).split(separator)
+      }
 
   def replace(text: String, replacement: String): Rope = Leaf(this.toString().replace(text, replacement))
 
