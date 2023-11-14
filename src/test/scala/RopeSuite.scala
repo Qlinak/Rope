@@ -203,12 +203,33 @@ class RopeSuite extends munit.FunSuite {
     assertEquals("hello".rope.duplicate(0, 2, 1).toString, "hello")
     assertEquals("hello".rope.duplicate(0, 2, 2).toString, "hehello")
   }
-//
-//  test("simplify - basic cases") {
-//    assertEquals("hello".rope.simplify, Rope.Leaf("hello"))
-//    assertEquals(("foo".rope + "bar".rope).simplify, Rope.Leaf("foo") + Rope.Leaf("bar"))
-//    assertEquals(("foo".rope * 0).simplify, Rope.empty)
-//    assertEquals(("foo".rope * 1).simplify, Rope.Leaf("foo"))
-//    assertEquals("dragonslayer".rope.slice(0, 7).simplify, Rope.Leaf("dragons"))
-//  }
+
+  test("simplify - basic cases") {
+    assertEquals("hello".rope.simplify, Rope.Leaf("hello"))
+    assertEquals(("foo".rope + "bar".rope).simplify, Rope.Leaf("foo") + Rope.Leaf("bar"))
+    assertEquals(("foo".rope * 0).simplify, Rope.empty)
+    assertEquals(("foo".rope * 1).simplify, Rope.Leaf("foo"))
+    assertEquals("dragonslayer".rope.slice(0, 7).simplify, Rope.Leaf("dragons"))
+  }
+
+  test("simplify - leaf"){
+    assertEquals("hello".rope.simplify, Rope.Leaf("hello"))
+  }
+
+  test("simplify - concat") {
+    assertEquals(("foo".rope + Rope.empty).simplify, Rope.Leaf("foo"))
+  }
+
+  test("simplify - repeat") {
+    assertEquals(("foo".rope * 3).simplify, Rope.Leaf("foo") + Rope.Leaf("foo") + Rope.Leaf("foo"))
+  }
+
+  test("simplify - slice") {
+    assertEquals("hello".rope.slice(0, 1).simplify, Rope.Leaf("h"))
+    assertEquals(("foo".rope + "bar".rope).slice(0, 1).simplify, Rope.Leaf("f"))
+    assertEquals(("foo".rope + "bar".rope).slice(3, 4).simplify, Rope.Leaf("b"))
+    assertEquals(("foo".rope + "bar".rope).slice(1, 4).simplify, Rope.Leaf("oo") + Rope.Leaf("b"))
+    assertEquals(Slice(Slice("foo".rope + "bar".rope, 2, 4), 1, 5).simplify, Rope.Leaf("o") + Rope.Leaf("b"))
+    assertEquals(("foo".rope * 9).slice(2, 4).simplify, Rope.Leaf("o") + Rope.Leaf("f"))
+  }
 }

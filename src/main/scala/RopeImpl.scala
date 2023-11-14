@@ -36,9 +36,9 @@ trait RopeImpl:
     case Repeat(rope, count) => rope.length * count
 
   def length: Int = cachedLength
-  
+
   private lazy val cachedToString: String = privateToString
-  
+
   private def privateToString: String = this match
     case Leaf(text) => text
     case Concat(left, right) => left.toString() + right.toString()
@@ -150,7 +150,7 @@ trait RopeImpl:
         List(this)
       }
       else if(start == 0){
-        Leaf("") :: this.delete(start, start + separator.length).split(separator)
+        Leaf("") :: this.delete(0, 0 + separator.length).split(separator)
       }
       else {
         Leaf(this.toString().substring(0, start)) :: this.delete(0, start + separator.length).split(separator)
@@ -165,4 +165,43 @@ trait RopeImpl:
     then this.delete(start, end)
     else this.slice(start, end) * times + this.slice(end, length)
 
-  def simplify: Rope = ???
+  private def splitAt(index: Int): (Rope, Rope) = (this.slice(0, index), this.slice(index + 1, this.length))
+
+  def simplify: Rope = this match
+    case Leaf(_) => this
+    case Concat(left, right) =>
+      if(left.length > 0 && right.length > 0){
+        this
+      }
+      else if(left.length == 0){
+        right.simplify
+      }
+      else {
+        left.simplify
+      }
+    case Repeat(r1, c1) => c1 match
+      case 0 => Rope.empty
+      case 1 => r1.simplify
+      case _ =>
+        val r1Res = r1.simplify
+        if r1Res == Rope.empty
+        then Rope.empty
+        else (1 until c1).foldLeft(r1Res)((acc, _) => acc + r1Res)
+    case Slice(r1, s1, e1) => r1 match
+      case Leaf(txt) => Leaf(txt.slice(s1, e1))
+      case Concat(left, right) =>
+        if(e1 <= left.length){
+          Slice(left, s1, e1).simplify
+        }
+        else if(s1 >= left.length){
+          Slice(right, s1-left.length, e1-left.length).simplify
+        }
+        else{
+          // in middle
+          Slice(left, s1, left.length).simplify + Slice(right, 0, e1-left.length).simplify
+        }
+      case Slice(r2, s2, e2) =>
+        if s2 >= s1 && e2 <= e1
+        then Slice(r2, s2, e2).simplify
+        else throw new IndexOutOfBoundsException
+      case Repeat(r2, c1) => Repeat(r2, c1).simplify.slice(s1, e1).simplify
