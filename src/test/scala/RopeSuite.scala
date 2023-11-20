@@ -91,6 +91,10 @@ class RopeSuite extends munit.FunSuite {
     assertEquals(Slice(Concat(("catch").rope, ("me" + X).rope), 0, 7).toString(), "catchme")
   }
 
+  test("toStringGood - slice with concat 2") {
+    assertEquals(Slice(Concat(("catch").rope, ("me" + X).rope), 5, 7).toString(), "me")
+  }
+
   test("toStringBad - slice with slice") {
     assertEquals(Slice(Slice(("catchme" + X).rope, 0, 7), 0, 100000000).toStringBad(), "catchme")
   }
@@ -131,6 +135,14 @@ class RopeSuite extends munit.FunSuite {
     assertEquals(Slice(Repeat("abc".rope, 100000000), 100, 106).toString(), "abcabcabc".slice(1, 7))
   }
 
+  test("toStringGood - slice with repeat 6") {
+    assertEquals(Slice(Repeat("abc".rope, 100000000), 3*(100000000-1), 3*100000000).toString(), ("abc" * 100000000).slice(3*(100000000-1), 3*100000000))
+  }
+
+  test("toStringGood - slice with repeat 7") {
+    assertEquals(Slice(Repeat("abc".rope, 100000000), 3 * 100000000 - 3, 3 * 100000000).toString(), ("abc" * 100000000).slice(3 * 100000000 - 3, 3 * 100000000))
+  }
+
   test("insert - basic cases") {
     assertEquals("hello".rope.insert("world".rope, 0).toString, "worldhello")
     assertEquals("hello".rope.insert("world".rope, 1).toString, "hworldello")
@@ -163,6 +175,7 @@ class RopeSuite extends munit.FunSuite {
     assertEquals("hello".rope.split("e").map(_.toString), List("h", "llo"))
     assertEquals("hello".rope.split("l").map(_.toString), List("he", "", "o"))
     assertEquals("hello".rope.split("o").map(_.toString), List("hell", ""))
+    assertEquals("hello".rope.split("").map(_.toString), "hello".split("").toList.map(_.toString))
   }
 
   test("replace - basic cases") {

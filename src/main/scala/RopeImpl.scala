@@ -47,7 +47,7 @@ trait RopeImpl:
       case Repeat(r2, count) =>
         val upperBound = e1 / r2.length + 1
         val lowerBound = s1 / r2.length
-        if upperBound > count
+        if upperBound - 1 > count
         then throw new IndexOutOfBoundsException
         else (r2.toString() * (upperBound - lowerBound)).slice(s1 % r2.length, s1 % r2.length + e1 - s1)
       case slice2@Slice(_, s2, e2) =>
@@ -60,7 +60,7 @@ trait RopeImpl:
           left.slice(s1, e1).toString()
         }
         else if (s1 >= leftLength) {
-          right.slice(s1, e1).toString()
+          right.slice(s1 - leftLength, e1 - leftLength).toString()
         }
         else {
           // slice is in the middle
@@ -97,9 +97,11 @@ trait RopeImpl:
           var res: Int = -1
 
           for (i <- 1 to text.length if !breakLoop) {
-            if (left.indexOf(text.take(i), start) != -1 && right.indexOf(text.drop(i), 0) != -1) {
+            val leftSplit = left.indexOf(text.take(i), start)
+            val rightSplit = right.indexOf(text.drop(i), 0)
+            if (leftSplit != -1 && rightSplit != -1) {
               breakLoop = true
-              res = left.indexOf(text.take(i), start)
+              res = leftSplit
             }
           }
 
