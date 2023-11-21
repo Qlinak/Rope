@@ -160,7 +160,7 @@ trait RopeImpl:
         Leaf(this.toString().substring(0, start)) :: this.delete(0, start + separator.length).split(separator)
       }
 
-  def replace(text: String, replacement: String): Rope = Leaf(this.toString().replace(text, replacement))
+  def replace(text: String, replacement: String): Rope = Leaf(this.toString().replaceAll(text, replacement))
 
   def duplicate(start: Int, end: Int, times: Int): Rope =
     if times < 0
