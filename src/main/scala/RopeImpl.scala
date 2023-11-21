@@ -122,7 +122,7 @@ trait RopeImpl:
         if offset == -1
         then -1
         else
-          val res = (rope.toString() * span).indexOf(text, start % rope.length) + start - start % rope.length
+          val res = offset + start - start % rope.length
           if res + text.length >= r.length // out of bound
           then -1
           else res
