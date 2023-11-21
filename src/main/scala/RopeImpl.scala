@@ -42,14 +42,16 @@ trait RopeImpl:
   private def privateToString: String = this match
     case Leaf(text) => text
     case Concat(left, right) => left.toString() + right.toString()
-    case Slice(rope, s1, e1) => if e1 <= s1 then throw new IndexOutOfBoundsException else rope match
+    case Slice(rope, s1, e1) => if e1 < s1 then throw new IndexOutOfBoundsException else if e1 == s1 then "" else rope match
       case Leaf(text) => text.slice(s1, e1)
       case Repeat(r2, count) =>
-        val upperBound = e1 / r2.length + 1
-        val lowerBound = s1 / r2.length
-        if upperBound - 1 > count
-        then throw new IndexOutOfBoundsException
-        else (r2.toString() * (upperBound - lowerBound)).slice(s1 % r2.length, s1 % r2.length + e1 - s1)
+        if r2.length == 0 then ""
+        else
+          val upperBound = e1 / r2.length + 1
+          val lowerBound = s1 / r2.length
+          if upperBound - 1 > count
+          then throw new IndexOutOfBoundsException
+          else (r2.toString() * (upperBound - lowerBound)).slice(s1 % r2.length, s1 % r2.length + e1 - s1)
       case slice2@Slice(_, s2, e2) =>
         if s2 >= s1 && e2 <= e1
         then slice2.toString()
@@ -165,7 +167,7 @@ trait RopeImpl:
     then throw new IllegalArgumentException
     else if times == 0
     then this.delete(start, end)
-    else this.slice(start, end) * times + this.slice(end, length)
+    else this.slice(0, start) + this.slice(start, end) * times + this.slice(end, length)
 
   private def splitAt(index: Int): (Rope, Rope) = (this.slice(0, index), this.slice(index + 1, this.length))
 
